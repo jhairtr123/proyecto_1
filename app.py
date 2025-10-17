@@ -58,6 +58,16 @@ st.download_button("Descargar datos filtrados", filtered_data.to_csv(index=False
                    "datos_filtrados.csv", "text/csv")
 
 
+# Botón adicional para mostrar gráfico por tipo de vehículo
+if st.button("Mostrar gráfica por tipo de vehículo"):
+    st.write("Comparación de categorías por tipo de vehículo")
+    type_counts = filtered_data["type"].value_counts().reset_index()
+    type_counts.columns = ["type", "count"]
+    fig = px.bar(type_counts, x="type", y="count", title="Cantidad de vehículos por tipo",
+                 color="type")
+    st.plotly_chart(fig, use_container_width=True, key="grafico_tipo_vehiculo")
+
+
 type_counts = filtered_data["type"].value_counts().reset_index()
 type_counts.columns = ["type", "count"]
 
