@@ -2,35 +2,30 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
+# Leer el conjunto de datos
+car_data = pd.read_csv('vehicles_us.csv')
+car_data.dropna(subset=["model_year", "type", "price", "odometer"], inplace=True)
+car_data.columns = car_data.columns.str.strip()
+
+
 # Encabezado
 st.header("Cuadro de mandos de vehículos en venta")
 
-# Leer el conjunto de datos
-car_data = pd.read_csv('vehicles_us.csv')
+st.subheader("Visualizaciones rápidas")
 
-# Botón para construir histograma
-hist_button = st.button('Construir histograma')
+col1, col2 = st.columns(2)
 
-if hist_button:
-    st.write('Creación de un histograma para la columna odómetro')
-    fig = px.histogram(car_data, x="odometer")
-    st.plotly_chart(fig, use_container_width=True)
+with col1:
+    if st.button("Histograma rápido"):
+        fig = px.histogram(car_data, x="odometer", title="Distribución del odómetro")
+        st.plotly_chart(fig, use_container_width=True)
 
-# Botón para construir gráfico de dispersión
-scatter_button = st.button('Construir gráfico de dispersión')
+with col2:
+    if st.button("Dispersión rápida"):
+        fig = px.scatter(car_data, x="odometer", y="price", color="transmission",
+                         title="Precio vs Odómetro")
+        st.plotly_chart(fig, use_container_width=True)
 
-if scatter_button:
-    st.write('Creación de un gráfico de dispersión entre odómetro y precio')
-    fig = px.scatter(car_data, x="odometer", y="price", color="transmission")
-    st.plotly_chart(fig, use_container_width=True)
-
-import streamlit as st
-import pandas as pd
-import plotly.express as px
-
-# Cargar datos desde Excel
-car_data = pd.read_csv('vehicles_us.csv')
-car_data.columns = car_data.columns.str.strip()  # Eliminar espacios extra si los hay
 
 # Título
 st.title("Visualización interactiva de vehículos")
@@ -58,6 +53,14 @@ filtered_data = car_data[
     (car_data["price"] >= price_range[0]) &
     (car_data["price"] <= price_range[1])
 ]
+
+st.download_button("Descargar datos filtrados", filtered_data.to_csv(index=False),
+                   "datos_filtrados.csv", "text/csv")
+
+
+type_counts = filtered_data["type"].value_counts().reset_index()
+type_counts.columns = ["type", "count"]
+
 
 # Selector de gráfico
 chart_type = st.radio(
