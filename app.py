@@ -35,35 +35,41 @@ filtered_data = car_data[
 st.download_button("Descargar datos filtrados", filtered_data.to_csv(index=False),
                    "datos_filtrados.csv", "text/csv")
 
-# Botones para mostrar gráficos
-st.subheader("Visualizaciones disponibles")
+# Conteo por tipo
+type_counts = filtered_data["type"].value_counts().reset_index()
+type_counts.columns = ["type", "count"]
 
-if st.button("Mostrar histograma de odómetro"):
+# Pestañas para cada gráfico
+tabs = st.tabs(["Histograma", "Dispersión", "Barras", "Caja", "Violín", "Pastel"])
+
+with tabs[0]:
+    st.subheader("Distribución del odómetro")
     fig = px.histogram(filtered_data, x="odometer", title="Distribución del odómetro")
     st.plotly_chart(fig, use_container_width=True, key="histograma")
 
-if st.button("Mostrar gráfico de dispersión"):
+with tabs[1]:
+    st.subheader("Precio vs Odómetro")
     fig = px.scatter(filtered_data, x="odometer", y="price", color="type",
                      hover_data=["model", "model_year"], title="Precio vs Odómetro")
     st.plotly_chart(fig, use_container_width=True, key="dispersión")
 
-if st.button("Mostrar gráfica por tipo de vehículo"):
-    type_counts = filtered_data["type"].value_counts().reset_index()
-    type_counts.columns = ["type", "count"]
+with tabs[2]:
+    st.subheader("Cantidad de vehículos por tipo")
     fig = px.bar(type_counts, x="type", y="count", title="Cantidad de vehículos por tipo", color="type")
-    st.plotly_chart(fig, use_container_width=True, key="barras_tipo")
+    st.plotly_chart(fig, use_container_width=True, key="barras")
 
-if st.button("Mostrar gráfico de caja"):
+with tabs[3]:
+    st.subheader("Distribución de precios por tipo")
     fig = px.box(filtered_data, x="type", y="price", title="Distribución de precios por tipo")
     st.plotly_chart(fig, use_container_width=True, key="caja")
 
-if st.button("Mostrar gráfico de violín"):
+with tabs[4]:
+    st.subheader("Distribución de precios (violín)")
     fig = px.violin(filtered_data, x="type", y="price", box=True, points="all",
                     title="Distribución de precios (violín)")
     st.plotly_chart(fig, use_container_width=True, key="violín")
 
-if st.button("Mostrar gráfico de pastel"):
-    type_counts = filtered_data["type"].value_counts().reset_index()
-    type_counts.columns = ["type", "count"]
+with tabs[5]:
+    st.subheader("Proporción de vehículos por tipo")
     fig = px.pie(type_counts, names="type", values="count", title="Proporción de vehículos por tipo")
     st.plotly_chart(fig, use_container_width=True, key="pastel")
