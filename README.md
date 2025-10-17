@@ -1,2 +1,1 @@
-# proyecto_1
-Un repositorio para poder realizar un pagina web
+Este repositorio contiene la información y el código necesarios para interactuar con gráficos en una página web. Incluye ejemplos, dependencias y una breve guía para integrar visualizaciones interactivas.
